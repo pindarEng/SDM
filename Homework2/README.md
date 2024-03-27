@@ -1,4 +1,4 @@
-Basic java socket instang messaing application.
+Basic java socket instant messaing application.
 
 TODO:
 -
