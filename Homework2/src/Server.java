@@ -28,6 +28,14 @@ public class Server {
         }
     }
 
+    public static void whisper(String message, int receiverId) {
+        for (ServerThread client : clients) {
+            if (client.getClientId() == receiverId) {
+                client.sendMessage(message);
+                break; // Exit loop after sending the message to the intended recipient
+            }
+        }
+    }
     public static void broadcast(String message) {
         for (ServerThread client : clients) {
             client.sendMessage(message);

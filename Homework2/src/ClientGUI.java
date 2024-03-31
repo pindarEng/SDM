@@ -1,6 +1,7 @@
+import javax.swing.*;
+import java.awt.event.*;
 import java.io.*;
 import java.net.*;
-import javax.swing.*;
 
 public class ClientGUI extends JFrame {
     private static final String SERVER_ADDRESS = "localhost";
@@ -11,7 +12,6 @@ public class ClientGUI extends JFrame {
     private PrintWriter writer;
     private JTextArea chatArea;
     private JTextField messageField;
-
 
     public ClientGUI() {
         setTitle("Chat Client");
@@ -37,7 +37,7 @@ public class ClientGUI extends JFrame {
             writer = new PrintWriter(socket.getOutputStream(), true);
             String idMessage = reader.readLine();
             clientId = Integer.parseInt(idMessage.substring(3));
-            chatArea.append("ID: "+clientId+ "\n");
+            chatArea.append("ID: " + clientId + "\n");
             Thread receiveThread = new Thread(this::receiveMessages);
             receiveThread.start();
         } catch (IOException e) {
@@ -48,7 +48,8 @@ public class ClientGUI extends JFrame {
     private void sendMessage() {
         String message = messageField.getText().trim();
         if (!message.isEmpty()) {
-            writer.println(clientId+":"+message);
+            writer.println(clientId + ":" + message);
+            chatArea.append(clientId + ":" + message);
             messageField.setText("");
         }
     }

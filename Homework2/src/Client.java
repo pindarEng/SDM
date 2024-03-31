@@ -13,11 +13,11 @@ public class Client {
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
             Scanner scanner = new Scanner(System.in);
 
-            int clientId = -1;
+            int[] clientId = {-1};
             String idMessage = reader.readLine();
             if (idMessage.startsWith("ID:")) {
-                clientId = Integer.parseInt(idMessage.substring(3));
-                System.out.println("Connected to server. Your ID is: " + clientId);
+                clientId[0] = Integer.parseInt(idMessage.substring(3));
+                System.out.println("Connected to server. Your ID is: " + clientId[0]);
             } else {
                 System.out.println("Invalid ID message received.");
                 System.exit(1);
@@ -27,7 +27,11 @@ public class Client {
                 try {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        if (isWhisperForClient(line,clientId[0])){
+                            System.out.println(line);
+                        }else {
+                            System.out.println(line);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -38,11 +42,22 @@ public class Client {
             while (true) {
                 System.out.print("");
                 String input = scanner.nextLine();
-                writer.println(clientId + ":" + input);
+                writer.println(clientId[0] + ":" + input);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private static boolean isWhisperForClient(String message, int clientId){
+        String[] parts = message.split(":");
+        if(parts.length == 3){
+            int receiverId = Integer.parseInt(parts[1]);
+            System.out.println(receiverId);
+            return receiverId == clientId;
+        }
+        return false;
     }
 
 }

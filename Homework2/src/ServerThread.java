@@ -16,7 +16,7 @@ class ServerThread implements Runnable {
             this.reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             this.writer = new PrintWriter(clientSocket.getOutputStream(), true);
             this.clientId = clientId;
-            sendMessage("ID:"+ String.valueOf(clientId));
+            initialization("ID:"+ String.valueOf(clientId));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -28,15 +28,33 @@ class ServerThread implements Runnable {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println("Received message from client:" + clientId + " msg-> " + line);
-                Server.broadcast(line);
+                String[] tokens = line.split(":");
+                System.out.println(tokens.length);
+                if(tokens.length == 2) {
+                    System.out.println(tokens[0] + " " + tokens[1] + " ");
+                    Server.broadcast(line);
+                }
+                else if (tokens.length == 3){
+                    System.out.println(tokens[0] + " " + tokens[1] + " " + tokens[2]);
+                    int receiverId = Integer.parseInt(tokens[1]);
+                    System.out.println(receiverId);
+                    Server.whisper(line,receiverId);
+                }
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+    public void initialization(String message){
+        writer.println(message);
+    }
+
     public void sendMessage(String message) {
         writer.println(message);
+//        writer.println("TESTING TESTING TESTING \n");
     }
     public int getClientId() {
         return clientId;
